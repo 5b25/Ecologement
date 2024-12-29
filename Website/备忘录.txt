@@ -1,0 +1,12 @@
+1. 需要vendor
+	-> 安装 composer
+	-> 命令行运行： 	
+			composer init
+			composer require monolog/monolog
+			composer require phpmailer/phpmailer
+
+phpmyadmin的密码： 1c22d5eaa05581fdd2f411bf6cde76206e08898aaa03352e28dd3f0100683f64
+
+2. action_page.php 中：
+	-> openssl.cnf 路径是硬编码的（D:/xampp/apache/conf/openssl.cnf），在新环境中需确定路径；
+	-> 

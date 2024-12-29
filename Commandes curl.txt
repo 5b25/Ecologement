@@ -1,0 +1,47 @@
+Il y a deux façons pour tester le serveur REST
+
+uvicorn serveur:app --host 0.0.0.0 --port 8000 --reload --reload-dir .
+
+
+1. On peux le tester sur le site de FastAPI local
+    http://127.0.0.1:8000/docs
+
+2. On utiliser curl en utilisant cmd
+    - Pour tester si on a réussi à accéder au serveur :  
+        curl -X GET --verbose "http://localhost:8000/"
+
+    - Pour récupérer les données de mesure
+        	curl -X GET --verbose "http://localhost:8000/getmesure/"
+         
+    - Pour récupérer les données de facture
+        	curl -X GET --verbose "http://localhost:8000/getfacture/"
+         
+    - Pour ajouter les données au mesure
+         /addmesure/{VALEUR}/{CA_ID}
+        	curl -X POST --verbose "http://localhost:8000/addmesure/1/2"
+         
+    - Pour ajouter les données au facture,
+        l'ordre est 'addfacture/{TYPE_CONSOMMEE}/{MONTANT}/{VALEUR}/{LOGEMENT_ID}'
+        # TYPE_CONSOMMEE sont 'eau', 'electricite' , 'dechets'
+        # LOGEMENT_ID n'est que 1 et 2
+        	curl -X POST --verbose "http://localhost:8000/addfacture/electricite/3/5/1"
+
+    - Pour ajouter les CA	
+         l'ordre est 'addcapture/{IP}/{COMMERCIALE}/{LIEU}/{PORT_COMMUNI}/{PIECE_ID}/{TYPE_ID}'
+         TYPE_ID : '1' est la temperature; '2' est l'humidite
+        	curl -X POST --verbose "http://localhost:8000/addcapture/192.168.1.3/DHT11/Chambre/1883/1/1"
+        	curl -X POST --verbose "http://localhost:8000/addcapture/192.168.1.4/DHT11/Chambre/1883/1/2"
+
+    - Pour verifier est-ce que les CA ont été bien ajoutés à la base de données 
+	curl -X GET --verbose "http://localhost:8000/getCAID/192.168.1.3"
+
+
+    - Pour la page HTML affichant le camembert
+        # LOGEMENT_ID n'est que 1 et 2
+        	curl -X GET --verbose "http://localhost:8000/getchart/1"
+
+    - Pour récupérer les données de la météo
+        	curl -X GET --verbose "http://localhost:8000/meteo/"
+
+    - Pour récupérer les données de la météo maintenant
+        	curl -X GET --verbose "http://localhost:8000/currentmeteo/"

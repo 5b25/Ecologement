@@ -1,0 +1,29 @@
+[28-Dec-2024 01:45:03 UTC] PHP Warning:  Module "openssl" is already loaded in Unknown on line 0
+[28-Dec-2024 01:50:05 UTC] PHP Warning:  Module "openssl" is already loaded in Unknown on line 0
+[28-Dec-2024 01:50:05 UTC] PHP Warning:  Module "openssl" is already loaded in Unknown on line 0
+[28-Dec-2024 03:53:40 Europe/Berlin] PHP Warning:  require(./src/Exception.php): Failed to open stream: No such file or directory in D:\OneDrive\Sorbonne\IOT\TP4\Code\Website\test.php on line 32
+[28-Dec-2024 03:53:40 Europe/Berlin] PHP Fatal error:  Uncaught Error: Failed opening required './src/Exception.php' (include_path='D:\xampp\php\PEAR') in D:\OneDrive\Sorbonne\IOT\TP4\Code\Website\test.php:32
+Stack trace:
+#0 {main}
+  thrown in D:\OneDrive\Sorbonne\IOT\TP4\Code\Website\test.php on line 32
+[28-Dec-2024 03:04:22 UTC] PHP Warning:  Module "openssl" is already loaded in Unknown on line 0
+[28-Dec-2024 03:04:22 UTC] PHP Warning:  Module "openssl" is already loaded in Unknown on line 0
+[28-Dec-2024 23:25:30 UTC] PHP Warning:  Module "openssl" is already loaded in Unknown on line 0
+[28-Dec-2024 23:34:03 UTC] PHP Warning:  Module "openssl" is already loaded in Unknown on line 0
+[28-Dec-2024 23:34:03 UTC] PHP Warning:  Module "openssl" is already loaded in Unknown on line 0
+[29-Dec-2024 20:16:16 UTC] PHP Warning:  Module "openssl" is already loaded in Unknown on line 0
+[29-Dec-2024 20:16:16 UTC] PHP Warning:  Module "openssl" is already loaded in Unknown on line 0
+[29-Dec-2024 21:15:46 UTC] PHP Warning:  Module "openssl" is already loaded in Unknown on line 0
+[29-Dec-2024 21:15:56 UTC] PHP Warning:  Module "openssl" is already loaded in Unknown on line 0
+[29-Dec-2024 21:21:47 UTC] PHP Warning:  Module "openssl" is already loaded in Unknown on line 0
+[29-Dec-2024 21:23:29 UTC] PHP Warning:  Module "openssl" is already loaded in Unknown on line 0
+[29-Dec-2024 21:23:51 UTC] PHP Warning:  Module "openssl" is already loaded in Unknown on line 0
+[29-Dec-2024 22:24:11 Europe/Berlin] PHP Warning:  Undefined variable $payload in D:\OneDrive\Sorbonne\IOT\TP4\Code\Website\dashboard.php on line 8
+[29-Dec-2024 22:24:11 Europe/Berlin] PHP Warning:  Undefined variable $privateKey in D:\OneDrive\Sorbonne\IOT\TP4\Code\Website\dashboard.php on line 8
+[29-Dec-2024 22:24:11 Europe/Berlin] PHP Fatal error:  Uncaught TypeError: Firebase\JWT\JWT::encode(): Argument #1 ($payload) must be of type array, null given, called in D:\OneDrive\Sorbonne\IOT\TP4\Code\Website\dashboard.php on line 8 and defined in D:\OneDrive\Sorbonne\IOT\TP4\Code\Website\vendor\firebase\php-jwt\src\JWT.php:199
+Stack trace:
+#0 D:\OneDrive\Sorbonne\IOT\TP4\Code\Website\dashboard.php(8): Firebase\JWT\JWT::encode(NULL, NULL, 'RS256')
+#1 {main}
+  thrown in D:\OneDrive\Sorbonne\IOT\TP4\Code\Website\vendor\firebase\php-jwt\src\JWT.php on line 199
+[29-Dec-2024 23:40:13 Europe/Berlin] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in D:\OneDrive\Sorbonne\IOT\TP4\Code\Website\Consommation.php on line 51
+[29-Dec-2024 23:40:13 Europe/Berlin] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in D:\OneDrive\Sorbonne\IOT\TP4\Code\Website\Consommation.php on line 53

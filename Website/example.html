@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Bootstrap Example</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+ 
+    <style>
+        /* 背景容器样式 */
+        .slide {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            z-index: -1; /* 背景图片置于内容层级以下 */
+        }
+
+        /* 背景图片*/
+        .wallpaper {
+            width: 100%;
+            height: 100%;
+            background-image: url('background.png'); /* 本地图片路径 */
+            background-size: cover; /* 背景填充 */
+            background-position: center; /* 背景居中 */
+            background-repeat: no-repeat; /* 禁止背景重复 */
+            opacity: 0.5; /* 设置透明度 */
+        }
+
+        /* 页面内容样式 */
+        .content {
+            position: relative; /* 内容相对定位，避免被覆盖 */
+            z-index: 1; /* 内容层级高于背景 */
+            color: white; /* 示例文本颜色 */
+            text-align: center;
+            padding-top: 100px;
+        }
+
+        /*水平垂直完全居中*/
+        .center-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%); /* 通过偏移使内容居中 */
+            background-color: #f8f9fa;
+            padding: 20px;
+            border: 1px solid #ccc;
+            text-align: center;
+        }
+    </style>
+
+</head>
+
+
+<body>
+
+    <!-- 背景图片 -->
+    <div class="slide">
+        <div class="wallpaper"></div>
+    </div>
+
+<div class="jumbotron text-center">
+  <h1>My First Bootstrap Page</h1>
+  <p>Resize this responsive page to see the effect!</p>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-6">
+            <h1>h1 Bootstrap 标题 (36px)</h1>
+            <h2>h2 Bootstrap 标题 (30px)</h2>
+            <h3>h3 Bootstrap 标题 (24px)</h3>
+            <h4>h4 Bootstrap 标题 (18px)</h4>
+            <h5>h5 Bootstrap 标题 (14px)</h5>
+            <h6>h6 Bootstrap 标题 (12px)</h6>
+        </div>
+        <div class="col-sm-6">
+            <h1>较轻的，从属文本</h1>
+            <p>small 元素用于在任何标题中创建较轻的从属文本:</p>
+            <h1>h1 标题 <small>从属文本</small></h1>
+            <h2>h2 标题 <small>从属文本</small></h2>
+            <h3>h3 标题 <small>从属文本</small></h3>
+            <h4>h4 标题 <small>从属文本</small></h4>
+            <h5>h5 标题 <small>从属文本</small></h5>
+            <h6>h6 标题 <small>从属文本</small></h6>
+        </div>
+    </div>
+</div>  
+
+<div class="container">
+    <h1>高亮文本</h1>
+    <p>使用 mark 元素来 <mark>高亮</mark> 文本</p>
+</div>
+
+<div class="container">
+    <h1>缩写</h1>
+    <p>abbr 元素用于标记缩写或首字母缩略词:</p>
+    <p><abbr title="World Health Organization">WHO</abbr> 建立于 1984 年</p>
+</div>
+
+<div class="container">
+    <h1>Blockquotes</h1>
+    <p>blockquote 元素用于显示来自其他来源的内容:</p>
+    <blockquote>
+      <p>50 年来，WWF(世界自然基金会)一直在保护自然的未来。世界自然基金会是世界领先的保护组织，在 100 个国家开展工作，得到了美国 120 万会员和全球近 500 万会员的支持。</p>
+      <footer>摘自 WWF 的网站</footer>
+    </blockquote>
+</div>
+
+<div class="container">
+    <h1>列表</h1>
+    <p>dl 元素表示描述列表:</p>
+    <dl>
+        <dt>Coffee</dt>
+        <dd>- black hot drink</dd>
+        <dd>-test</dd>
+      
+        <dt>Milk</dt>
+        <dd>- white cold drink</dd>
+    </dl>
+</div>
+
+<div class="container">
+    <h1>代码片段</h1>
+    <p>内联代码片段应该嵌入到 code 元素中:</p>
+    <p>下面是 HTML 元素: <code>span</code>, <code>section</code>, 与 <code>div</code> 定义文档中的部分。</p>
+</div>
+
+
+<div class="container">
+    <h1>键盘输入</h1>
+    <p>要指示通常通过键盘输入的输入，请使用 kbd 元素:</p>
+    <p>使用 <kbd>ctrl + p</kbd> 打开 "打印" 对话框。</p>
+</div>
+
+<div class="container">
+    <h2>上下文颜色</h2>
+    <p>使用上下文样式来提供 &quot;有含义的颜色&quot;:</p>
+    <p class="text-muted">这个文本是安静的</p>
+    <p class="text-primary">这个文本是重要的</p>
+    <p class="text-success">这个文本表示成功</p>
+    <p class="text-info">这个文代表了一些信息</p>
+    <p class="text-warning">这个文本表示警告</p>
+    <p class="text-danger">这段文字代表危险</p>
+</div>
+
+
+<div class="container">
+    <h2>上下文背景</h2>
+    <p>使用上下文背景来提供 &quot;有含义的颜色&quot;:</p>
+    <p class="bg-primary">这个文本是重要的</p>
+    <p class="bg-success">这个文本表示成功</p>
+    <p class="bg-info">这个文代表了一些信息</p>
+    <p class="bg-warning">这个文本表示警告</p>
+    <p class="bg-danger">这段文字代表危险</p>
+</div>
+
+<div class="container">
+    <h2>Contextual Classes</h2>
+    <p>Contextual classes can be used to color table rows or table cells. The classes that can be used are: .active, .success, .info, .warning, and .danger.</p>
+    <div class="table-responsive">
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>Firstname</th>
+          <th>Lastname</th>
+          <th>Email</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Default</td>
+          <td>Defaultson</td>
+          <td>def@somemail.com</td>
+        </tr>      
+        <tr class="success">
+          <td>Success</td>
+          <td>Doe</td>
+          <td>john@example.com</td>
+        </tr>
+        <tr class="danger">
+          <td>Danger</td>
+          <td>Moe</td>
+          <td>mary@example.com</td>
+        </tr>
+        <tr class="info">
+          <td>Info</td>
+          <td>Dooley</td>
+          <td>july@example.com</td>
+        </tr>
+        <tr class="warning">
+          <td>Warning</td>
+          <td>Refs</td>
+          <td>bo@example.com</td>
+        </tr>
+        <tr class="active">
+          <td>Active</td>
+          <td>Activeson</td>
+          <td>act@example.com</td>
+        </tr>
+      </tbody>
+    </table>
+</div>
+
+<div class="container">
+    <h2>Well 大小</h2>
+    <div class="well well-sm">小尺寸 Well</div>
+    <div class="well">中等尺寸 Well</div>
+    <div class="well well-lg">大尺寸 Well</div>
+</div>
+
+<div class="container">
+    <h2>弹出框动画</h2>
+    <p>.fade 与 .in 类在关闭弹出框时添加淡出效果</p>
+    <div class="alert alert-success alert-dismissible fade in">
+      <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+      <strong>成功!</strong> 此弹出框可能表示执行了成功或正面的操作，您应该 <a href="https://www.baidu.com" class="alert-link">阅读这个消息</a>。
+    </div>
+    <div class="alert alert-info alert-dismissible fade in">
+      <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+      <strong>消息!</strong> 此弹出框可能表示执行了修改或中性的操作，您应该 <a href="chart.html" class="alert-link">阅读这个消息</a>。
+    </div>
+    <div class="alert alert-warning alert-dismissible fade in">
+      <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+      <strong>警告!</strong> 此弹出框可能表示一个需要关注的警告，您应该 <a href="#" class="alert-link">阅读这个消息</a>。
+    </div>
+    <div class="alert alert-danger alert-dismissible fade in">
+      <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+      <strong>危险!</strong> 此弹出框可能表示执行了一个危险或潜在的负面操作，您应该 <a href="#" class="alert-link">阅读这个消息</a>。
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12">
+            <h2>按钮风格</h2>
+            <button type="button" class="btn" style="color:#333;">基础</button>
+            <button type="button" class="btn btn-default">默认</button>
+            <button type="button" class="btn btn-primary">重要</button>
+            <button type="button" class="btn btn-success">成功</button>
+
+            <script>
+                function showAlert() {
+                    let alertHtml = `
+                        <div class="alert alert-success alert-dismissible fade in">
+                            <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                            <strong>成功!</strong> 动态加载的弹出框。
+                        </div>`;
+                    document.body.insertAdjacentHTML('afterbegin', alertHtml);
+                }
+            </script>
+            <button type="button" class="btn btn-info" onclick="showAlert()">信息</button>
+
+            <button type="button" class="btn btn-warning">警告</button>
+            <button type="button" class="btn btn-danger">危险</button>
+            <button type="button" class="btn btn-link">链接</button>
+        </div>
+        <div class="col-sm-12">
+            <h2>Button 标签</h2>
+            <a href="https://www.baidu.com" class="btn btn-info" role="button">Link Button</a>
+            <script>
+                function showMessage() {
+                    alert("按钮被点击了！");
+                }
+            </script>
+            <button type="button" class="btn btn-info"onclick="showMessage()">Button</button>
+            <input type="button" class="btn btn-info" value="Input Button">
+            <input type="submit" class="btn btn-info" value="Submit Button">
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
