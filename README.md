@@ -56,7 +56,7 @@ Les fonctions du site n'a pas encore été entièrement implémentée et est en 
 
 La fonctionnalité de cette page web repose sur deux outils : XAMPP et Composer. XAMPP fournit un environnement avec un serveur Apache et une base de données MySQL, nécessaires pour exécuter les scripts PHP et gérer les interactions avec la base de données. Composer est utilisé pour gérer les dépendances du projet PHP (comme PHPMailer et dotenv). Pour activer les fonctionnalités réseau du programme, veuillez d'abord installer et configurer correctement ces outils.
 
-Après avoir terminé les configurations ci-dessous, utilisez ”http://ecologe.local:721/login.php“ pour commencer à accéder au site web.
+Après avoir terminé les configurations ci-dessous, utilisez "http://ecologe.local:721/login.php" pour commencer à accéder au site web.
 
 
 ### XAMPP
