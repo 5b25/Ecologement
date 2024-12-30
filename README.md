@@ -141,11 +141,13 @@ Si la base de données existe déjà, assurez-vous que l'utilisateur `ecologemen
 
 3. Modifier les fichiers de configuration :
 Dans le fichier `.env` déjà fourni avec le projet, l'utilisateur doit remplacer les valeurs suivantes par les siennes :
+    ```
     DB_USER=ecologement
     DB_PASSWORD=VotreMotDePasse
     DB_NAME=ecologement
     DB_HOST=localhost
     DB_PORT=3306
+    ```
 
 Assurez-vous de bien renseigner le mot de passe défini pour l'utilisateur `ecologement` lors de la création.
 
