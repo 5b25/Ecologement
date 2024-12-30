@@ -1,4 +1,5 @@
-La fonction n'a pas encore été entièrement implémentée et est en cours d'amélioration. ——29/12/2024
+Les fonctions du site n'a pas encore été entièrement implémentée et est en cours d'amélioration. 
+                                                                                                ——29/12/2024
 
 # Version 0.6
 
