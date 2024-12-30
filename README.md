@@ -113,6 +113,48 @@ Après avoir terminé les configurations ci-dessous, utilisez `http://ecologe.lo
 
 ---
 
+### phpMyAdmin
+
+Avant de commencer à utiliser le site, vous devez créer un utilisateur « ecologement » dans phpMyAdmin et configurer correctement ses permissions :
+
+
+1. Créer un utilisateur `ecologement` :
+    - Ouvrez phpMyAdmin via `http://localhost/phpmyadmin`.
+    - Cliquez sur **"Utilisateurs"** dans le menu principal.
+    - Cliquez sur **"Ajouter un utilisateur"**.
+    - Renseignez les informations suivantes :
+       - **Nom d'utilisateur** : `ecologement`
+       - **Hôte** : `localhost`
+       - **Mot de passe** : Choisissez un mot de passe sécurisé
+       - **Répéter le mot de passe** : Réentrez le même mot de passe
+    - Cochez **"Créer une base de données portant ce nom et donner tous les privilèges"** (si la base de données n'existe pas encore).
+    - Cliquez sur **"Exécuter"**.
+
+2. Configurer les permissions (si nécessaire) :**
+Si la base de données existe déjà, assurez-vous que l'utilisateur `ecologement` a les permissions nécessaires :
+    - Allez dans la liste des utilisateurs et cliquez sur **"Modifier les privilèges"** pour l'utilisateur `ecologement`.
+    - Vérifiez que les permissions suivantes sont activées :
+       - **Données** : `SELECT`, `INSERT`, `UPDATE`, `DELETE`
+       - **Structure** : `CREATE`, `ALTER`, `INDEX`, `DROP`
+       - **Administration** : `GRANT OPTION`
+    - Cliquez sur **"Exécuter"** pour enregistrer.
+
+3. Modifier les fichiers de configuration :
+Dans le fichier `.env` déjà fourni avec le projet, l'utilisateur doit remplacer les valeurs suivantes par les siennes :
+    DB_USER=ecologement
+    DB_PASSWORD=VotreMotDePasse
+    DB_NAME=ecologement
+    DB_HOST=localhost
+    DB_PORT=3306
+
+Assurez-vous de bien renseigner le mot de passe défini pour l'utilisateur `ecologement` lors de la création.
+
+### **Remarque :**
+Dans le même temps, veuillez modifier le fichier .env dans le dossier "Website" pour que le programme fonctionne normalement.
+
+
+---
+
 ### Composer
 
 1. Installer Composer.  
