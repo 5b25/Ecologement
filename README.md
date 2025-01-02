@@ -2,6 +2,10 @@
 
 Les fonctions du site n'a pas encore été entièrement implémentée et est en cours d'amélioration.   ——30/12/2024
 
+# Version 1.0
+
+La fonction de page Web est pratiquement terminée.   ——2/1/2025
+
 ## Le serveur
 
 ### Commande pour démarrer le serveur basé sur FastAPI avec le fichier server.py :
