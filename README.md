@@ -2,7 +2,7 @@
 
 Les fonctions du site n'a pas encore été entièrement implémentée et est en cours d'amélioration.   ——30/12/2024
 
-# Version 1.0
+# Version 0.9
 
 La fonction de page Web est pratiquement terminée.   ——2/1/2025
 
