@@ -11,6 +11,8 @@ La fonction de page Web est pratiquement terminée.   ——2/1/2025
 ### Commande pour démarrer le serveur basé sur FastAPI avec le fichier server.py :
     uvicorn serveur:app --host 0.0.0.0 --port 8000 --reload --reload-dir .
 
+### ou utiliser `boot_serveur.bat`
+
 1. On peux le tester sur le site de FastAPI local :  
     http://127.0.0.1:8000/docs
 
