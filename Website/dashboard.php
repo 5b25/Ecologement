@@ -11,6 +11,12 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 
     <style>
+        /* 页面设置滚动对齐 */
+        body {
+            scroll-snap-type: y mandatory; /* 强制滚动到对齐位置 */
+        }
+
+        /* 背景图片部分 */
         .slide {
             position: fixed;
             top: 0;
@@ -19,30 +25,42 @@
             height: 100vh;
             z-index: -1;
         }
-
         .wallpaper {
             width: 100%;
             height: 100%;
-            background-image: url('background.png');
+            background-image: url('photos/background.png');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
             opacity: 0.5;
         }
 
+        /* 导航栏部分 */
         .dashboard-container {
             margin: 20px;
         }
-
         .nav-container {
             margin-bottom: 20px;
         }
+        .navbar-right {
+            margin-right: 20px;
+        }
 
+
+        /* 标题独立全屏显示 */
+        .page-title-section {
+            height: 100vh; /* 占据整个视窗高度 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            scroll-snap-align: start; /* 滚动到页面顶部时对齐 */
+        }
         .page-title {
             text-align: center;
             margin-bottom: 20px;
+            font-weight: bold; /* 加粗 */
+            font-size: 4em;    /* 调整字号 */
         }
-
         .chart-container {
             position: relative;
             margin: auto;
@@ -50,23 +68,32 @@
             width: 80%;
         }
 
-        .thumbnail {
-            text-align: center;
-        }
-
-        .thumbnail img {
-            height: 150px;
-            width: auto;
-            margin: auto;
-        }
-
-        .row-centered {
+        /* 下方框图的样式 */
+        /* 框图部分全屏显示，居中内容 */
+        .row-centered-section {
+            height: 100vh; /* 占据整个视窗高度 */
             display: flex;
             justify-content: center;
             align-items: center;
-            height: calc(100vh - 120px); /* Adjust height to center thumbnails with padding for navbar */
+            scroll-snap-align: center; /* 滚动到该区域时居中 */
         }
-
+        .thumbnail {
+            width: 300px; /* 增大显示框宽度 */
+            height: auto; /* 高度自动调整，或设置固定高度 */
+            padding: 20px; /* 添加内边距 */
+            text-align: center;
+        }
+        .thumbnail img {
+            height: 200px; /* 增大图片高度 */
+            width: auto; /* 宽度自适应 */
+        }
+        .row-centered {
+            display: flex;
+            justify-content: space-around; /* 修改为 `space-around` 让显示框之间有更大间距 */
+            align-items: center;
+            height: auto; /* 根据内容自动调整高度 */
+            gap: 100px; /* 新增列之间的间距 */
+        }
         .col-centered {
             display: flex;
             flex-direction: column;
@@ -74,9 +101,6 @@
             justify-content: center;
         }
 
-        .navbar-right {
-            margin-right: 20px;
-        }
     </style>
 </head>
 <body>
@@ -98,56 +122,54 @@
             </div>
         </nav>
 
-        <div class="row row-centered">
+        <!-- 标题部分 -->
+        <div class="page-title-section">
             <h2 class="page-title" id="pageTitle">Dashboard - Écologement</h2>
         </div>
 
-        <div class="row row-centered">
-            <div class="col-sm-6 col-md-3 col-centered">
-                <div class="thumbnail">
-                    <img src="background.png" alt="Consommation">
-                    <div class="caption">
-                        <h3>Consommation</h3>
-                        <p>在此可以查看消耗情况</p>
-                        <p>
-                            <a href="Consommation.php?type=électricité" class="btn btn-primary" role="button">
-                                électricité
-                            </a>
-                            <a href="Consommation.php?type=eau" class="btn btn-primary" role="button">
-                                eau
-                            </a>
-                            <a href="Consommation.php?type=déchets" class="btn btn-primary" role="button">
-                                déchets
-                            </a>
-                        </p>
+        <!-- 框图内容部分 -->
+        <div class="row-centered-section">
+            <div class="row row-centered">
+                <div class="col-sm-6 col-md-3 col-centered">
+                    <div class="thumbnail">
+                        <img src="photos/Consommation.jpg" alt="Consommation">
+                        <div class="caption">
+                            <h3>Consommation</h3>
+                            <p>Vous pouvez consulter la consommation ici</p>
+                            <p>
+                                <a href="Consommation.php" class="btn btn-primary" role="button">
+                                    Consommation
+                                </a>
+                            </p>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-sm-6 col-md-3 col-centered">
-                <div class="thumbnail">
-                    <img src="background.png" alt="Capteurs/Actionneurs">
-                    <div class="caption">
-                        <h3>Capteurs/Actionneurs</h3>
-                        <p>在此可以查看传感器情况</p>
-                        <p>
-                            <a href="CA.php" class="btn btn-primary" role="button">
-                                Capteurs/Actionneurs
-                            </a>
-                        </p>
+                <div class="col-sm-6 col-md-3 col-centered">
+                    <div class="thumbnail">
+                        <img src="photos/CA.jpg" alt="Capteurs/Actionneurs">
+                        <div class="caption">
+                            <h3>Capteurs/Actionneurs</h3>
+                            <p>Vous pouvez voir l'état du capteur/actionneurs ici</p>
+                            <p>
+                                <a href="CA.php" class="btn btn-primary" role="button">
+                                    Capteurs/Actionneurs
+                                </a>
+                            </p>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-sm-6 col-md-3 col-centered">
-                <div class="thumbnail">
-                    <img src="background.png" alt="Configuration">
-                    <div class="caption">
-                        <h3>Configuration</h3>
-                        <p>在此可以添加数据</p>
-                        <p>
-                            <a href="Configuration.php" class="btn btn-primary" role="button">
-                                Configuration
-                            </a>
-                        </p>
+                <div class="col-sm-6 col-md-3 col-centered">
+                    <div class="thumbnail">
+                        <img src="photos/Configuration.jpeg" alt="Configuration">
+                        <div class="caption">
+                            <h3>Configuration</h3>
+                            <p>Vous pouvez ajouter des données ici</p>
+                            <p>
+                                <a href="Configuration.php" class="btn btn-primary" role="button">
+                                    Configuration
+                                </a>
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -4,7 +4,7 @@
 
 #ifndef STASSID
 #define STASSID "yxc_k60"
-#define STAPSK "AbsFFT513Ys@"
+#define STAPSK "Ciallour!"
 #endif
 
 #define MSG_BUFFER_SIZE	(50)
@@ -83,10 +83,10 @@ void IDGetRequest(const char* serverUrl, int status) {
 
   if (httpCode_ID == 471) {
       if (status == 1) {
-        http.begin(client, "http://localhost:8000/addcapture/192.168.1.3/DHT11/Chambre/1883/1/1");
+        http.begin(client, "http://192.168.154.65:8000/addcapture/10.20.20.21/Température/Chambre/1883/5/1");
         http.end();
-      else {
-        http.begin(client, "http://localhost:8000/addcapture/192.168.1.4/DHT11/Chambre/1883/1/2");
+      } else {
+        http.begin(client, "http://192.168.154.65:8000/addcapture/10.20.20.22/Humidité/Chambre/1883/5/2");
         http.end();
       }
   }
@@ -125,16 +125,16 @@ void sendHumidityAndTemperature(float h, String ID_Humidite, float t, String ID_
     // 将浮点数 h 转换为整数
     int int_h = (int)h;
     int int_t = (int)t;
-    int int_HumiditeID = ID_Humidite.toInt();
-    int int_TemperatureID = ID_Temperature.toInt();
+    int int_HumiditeID = 7;
+    int int_TemperatureID = 6;
 
     // 创建 JSON 数据
     String jsonHumidityData = "{\"Humidity\": " + String(int_h) + ", \"CA_ID\": " + String(int_HumiditeID) + "}";
-    sendPOSTRequest("http://192.168.61.65:8000/addmesureESP/", jsonHumidityData);
+    sendPOSTRequest("http://192.168.154.65:8000/addmesureESP/", jsonHumidityData);
     delay(1000);
 
     String jsonTemperatureData = "{\"Temperature\": " + String(int_t) + ", \"CA_ID\": " + String(int_TemperatureID) + "}";
-    sendPOSTRequest("http://192.168.61.65:8000/addmesureESP/", jsonTemperatureData);
+    sendPOSTRequest("http://192.168.154.65:8000/addmesureESP/", jsonTemperatureData);
     delay(1000);
 }
 
@@ -233,12 +233,12 @@ void loop() {
     //snprintf (H, MSG_BUFFER_SIZE, "%.2f", h);
 
   // Faire une requête "GET" pour vérifier la température
-  IDGetRequest("http://192.168.61.65:8000/getCAID/192.168.1.3", 1);  // HTTP_GET pour récupérer l'ID de la température
-  IDGetRequest("http://192.168.61.65:8000/getCAID/192.168.1.4", 2);  // HTTP_GET pour récupérer l'ID de l'humidité
+  IDGetRequest("http://192.168.154.65:8000/getCAID/10.20.20.21", 1);  // HTTP_GET pour récupérer l'ID de la température
+  IDGetRequest("http://192.168.154.65:8000/getCAID/10.20.20.22", 2);  // HTTP_GET pour récupérer l'ID de l'humidité
 
   sendHumidityAndTemperature(h, ID_Humidite, t, ID_Temperature);
 
-  LED_Control("http://192.168.61.65:8000/currentmeteo/", h);
+  //LED_Control("192.168.154.65:8000/currentmeteo/", h);
 
   delay(10000); 
   }

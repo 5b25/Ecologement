@@ -1,9 +1,11 @@
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException, Query, Request
 from pydantic import BaseModel
 import sqlite3
 from interface import ui
 from weather import meteo
 import json
+from typing import Optional
+from urllib.parse import unquote
 
 app = FastAPI()
 
@@ -41,7 +43,9 @@ def getfacture(ID: int):
             TYPE_CONSOMMEE, 
             SUM(VALEUR) AS total_valeur 
         FROM FACTURE 
-        WHERE LOGEMENT_ID = ? 
+        WHERE LOGEMENT_ID IN (
+            SELECT ID FROM LOGEMENT WHERE NOM = ?
+        )
         AND TYPE_CONSOMMEE IN ('eau', 'electricite', 'dechets')
         GROUP BY TYPE_CONSOMMEE
         '''
@@ -58,33 +62,123 @@ def getfacture(ID: int):
     except sqlite3.Error as e:
         raise HTTPException(status_code=500, detail=f"Erreur de la base de données: {e}")
     
+def getfactureDetail(type: str = None, logement: str = None, start_date: str = None, end_date: str = None):
+    try:
+        conn = sqlite3.connect('logement.db')
+        conn.row_factory = sqlite3.Row
+        c = conn.cursor()
+
+        # 构造 SQL 查询
+        query = '''
+        SELECT 
+            TYPE_CONSOMMEE, 
+            SUM(VALEUR) AS total_valeur 
+        FROM FACTURE 
+        WHERE 1=1
+        '''
+        params = []
+        if logement:
+            query += " AND LOGEMENT_ID IN (SELECT ID FROM LOGEMENT WHERE NOM = ?)"
+            params.append(logement)
+        if type:
+            query += " AND TYPE_CONSOMMEE = ?"
+            params.append(type)
+        if start_date:
+            query += " AND DATE_CREATION >= ?"
+            params.append(start_date)
+        if end_date:
+            query += " AND DATE_CREATION <= ?"
+            params.append(end_date)
+        query += " GROUP BY TYPE_CONSOMMEE"
+
+        print("Executing query:", query)  # 调试日志
+        print("Parameters:", params)  # 调试日志
+
+        c.execute(query, params)
+        rows = c.fetchall()
+        conn.close()
+
+        # 转换结果为 JSON 格式
+        if not rows:
+            return {}
+
+        data = {row["TYPE_CONSOMMEE"]: row["total_valeur"] for row in rows}
+        return data
+
+    except sqlite3.Error as e:
+        raise HTTPException(status_code=500, detail=f"Erreur de la base de données: {e}")
+    
+@app.get("/getmesureDetail/")
+async def get_mesureDetail(logement: Optional[str] = Query(None)):
+    return getmesureDetail(logement=logement)
+
+def getmesureDetail(logement: Optional[str] = None):
+    try:
+        conn = sqlite3.connect('logement.db')
+        conn.row_factory = sqlite3.Row
+        c = conn.cursor()
+
+        query = '''
+        SELECT m.ID AS MESURE_ID, 
+               m.VALEUR, 
+               m.DATE_CREATION, 
+               c.ID AS CA_ID, 
+               c.IP AS CA_IP, 
+               COALESCE(c.LIEU, '未知位置') AS LIEU, 
+               p.ID AS PIECE_ID, 
+               COALESCE(p.IP, '未知房间') AS PIECE_NAME, 
+               l.ID AS LOGEMENT_ID, 
+               l.NOM AS LOGEMENT_NAME,
+               COALESCE(t.NOM, '未知类型') AS DATA_TYPE
+        FROM MESURE m
+        JOIN CAPTUREACTIONNEUR c ON m.CA_ID = c.ID
+        JOIN PIECE p ON c.PIECE_ID = p.ID
+        JOIN LOGEMENT l ON p.LOGEMENT_ID = l.ID
+        JOIN TYPE_CA t ON c.TYPE_ID = t.ID
+        '''
+
+        params = []
+        if logement:
+            query += " WHERE l.NOM = ?"
+            params.append(logement)
+
+        c.execute(query, params)
+        rows = c.fetchall()
+        conn.close()
+
+        data = [dict(row) for row in rows] if rows else []
+        return data
+    except sqlite3.Error as e:
+        raise HTTPException(status_code=500, detail=f"Erreur de la base de données: {e}")
+
+
 # Pour verifier est-ce que le CA a été déjà ajouté.
 def getCAID(IP: str):
     try:
-        # Utiliser le gestionnaire de contexte pour la connexion
+        print(f"Debug: Searching for IP: {IP}")
         with sqlite3.connect('logement.db') as conn:
             conn.row_factory = sqlite3.Row
             c = conn.cursor()
-            
-            # Requête pour obtenir l'ID correspondant à l'adresse IP donnée
             query = '''
             SELECT 
                 ID
             FROM CAPTUREACTIONNEUR 
             WHERE IP = ?
             '''
+            print(f"Debug: Executing query: {query} with IP: {IP}")
             c.execute(query, (IP,))
-            row = c.fetchone()  # Utilisation de fetchone pour obtenir la première correspondance
-            
-        # Vérifier si le résultat est vide
-        if row is None:
-            raise HTTPException(status_code=471, detail=f"Le CA avec IP {IP} n'est pas ajouté dans la base de données")
+            row = c.fetchone()
 
-        # Retourner l'ID dans un format JSON
-        return row["ID"]
+            if row is None:
+                print(f"Debug: No record found for IP: {IP}")
+                raise HTTPException(status_code=471, detail=f"Le CA avec IP {IP} n'est pas ajouté dans la base de données")
+            
+            print(f"Debug: Query result: {row['ID']}")
+            return {"CA_ID": row["ID"]}
 
     except sqlite3.Error as e:
-        raise HTTPException(status_code=500, detail=f"Erreur de la base de données: {e}")
+        print(f"Debug: Database error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Erreur de la base de données: {str(e)}")
 
 
 def add(Nom_table: str, parametre):
@@ -160,16 +254,25 @@ async def add_capture(IP: str, COMMERCIALE: str, LIEU: str, PORT_COMMUNI: int, P
     return add("CA", CA)
 
 @app.get("/getCAID/{CA_IP}")
-async def get_CAID(CA_IP:str):
-    return getCAID(CA_IP)
+async def get_CAID(CA_IP: str):
+        return getCAID(CA_IP)
+
 
 @app.get("/getmesure/")
 async def get_mesure():
     return get("MESURE")
 
+@app.get("/getmesureDetail/")
+async def get_mesureDetail(logement: Optional[str] = Query(None)):
+    return getmesureDetail(logement=logement)
+
 @app.get("/getfacture/")
 async def get_facture():
     return get("FACTURE")
+
+@app.get("/getfactureDetail/")
+async def get_factureDetail(type: str = None, logement: str = None, start_date: str = None, end_date: str = None):
+    return getfactureDetail(type=type, logement=logement, start_date=start_date, end_date=end_date)
 
 @app.get("/")
 async def root():
@@ -201,3 +304,16 @@ async def get_weather_data():
         return current_temperature
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erreur lors de l'appel météo: {e}")
+    
+@app.get("/getlogements/")
+async def get_logements():
+    try:
+        conn = sqlite3.connect('logement.db')
+        conn.row_factory = sqlite3.Row
+        c = conn.cursor()
+        c.execute("SELECT NOM FROM LOGEMENT")
+        rows = c.fetchall()
+        conn.close()
+        return [dict(row) for row in rows]
+    except sqlite3.Error as e:
+        raise HTTPException(status_code=500, detail=f"Erreur de la base de données: {e}")

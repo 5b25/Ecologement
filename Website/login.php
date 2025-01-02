@@ -24,7 +24,7 @@
         .wallpaper {
             width: 100%;
             height: 100%;
-            background-image: url('background.png'); /* 背景图片路径 */
+            background-image: url('photos/background.png'); /* 背景图片路径 */
             background-size: cover; /* 背景图覆盖整个容器 */
             background-position: center; /* 背景居中显示 */
             background-repeat: no-repeat; /* 不重复背景图 */

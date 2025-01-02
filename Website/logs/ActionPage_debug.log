@@ -2748,3 +2748,9 @@ qQIDAQAB
 [2025-01-02 04:51:37] 'users' table already exists.
 [2025-01-02 04:51:37] Action received: "login"
 [2025-01-02 04:51:37] Data received: {"action":"login","email":"FMT200907@outlook.com","password":"pEsZGJaqI7GI7wdXyY5ioHhpJe9dFB1e\/ZXULKCKqZ5D4dkG70ho7ZTlfJswQUs3Kmdn6u\/tOSE6pRIWNoIOa71U6OeFB0zz2WvwbZQLxhjCsxyiIOPNM8r1NJcH9u+Mb1eVvKDf1X4ELs4ytD2\/iWqUCcaFqXTZSIsC7QJih9UqHdmMu7LLQEZevXmSpUywBQ6ulubMi2bfVhkwbVAlFvCD1j83V6I76makwn8w8sB7ttGdosE1i6p387M4xuCrMdig1XG6JlLEd31TMmcNCFQZvkH2aoZ9sMjdxb08aRufk3zpllVAoK2RomnIoek2EY6gY4S4RAv6lYZ+DYvtYw=="}
+[2025-01-02 06:20:10] Loaded ENV: {"SMTP_USERNAME":"","SMTP_PASSWORD":"","SQL_HOST":"localhost","SQL_USERNAME":"ecologement","SQL_PASSWORD":"RRXgQ[recu0bN*Ft","SQL_DATABASE":"ecologement","API_KEY":"SDkIjUweR5642ClqeJKLsPlD23jws2kg1jfKSJDK="}
+[2025-01-02 06:20:10] Generated Fingerprint: Hfmw124BTK09zVDm+CkYwJcBAUHgQWCvxqg8Ixr3fDI=
+[2025-01-02 06:20:10] Received API Key from request: SDkIjUweR5642ClqeJKLsPlD23jws2kg1jfKSJDK=
+[2025-01-02 06:20:10] Received API_KEY: SDkIjUweR5642ClqeJKLsPlD23jws2kg1jfKSJDK=
+[2025-01-02 06:20:10] Public Key API Triggered
+
