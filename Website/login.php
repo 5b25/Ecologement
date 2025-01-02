@@ -312,25 +312,6 @@
             openModal("resetModal"); // 打开重置密码模态框
         });
 
-        // 发送注册验证码
-        document.getElementById("sendRegisterCode").addEventListener("click", () => {
-            const email = document.getElementById("registerEmail").value; // 获取注册邮箱
-            if (!email) { // 如果邮箱为空
-                alert("Veuillez fournir une adresse e-mail !"); // 显示错误提示
-                return;
-            }
-
-            fetch("action_page.php", { // 调用后端接口
-                method: "POST", // POST方法
-                headers: { "Content-Type": "application/json" }, // 设置请求头
-                body: JSON.stringify({ action: "sendVerificationCode", email }), // 请求体包含邮箱信息
-            })
-                .then((response) => response.json()) // 解析JSON响应
-                .then((data) => {
-                    alert(data.message); // 显示后端返回的消息
-                });
-        });
-
         // 定义验证规则的正则表达式
         const passwordRules = {
             length: /.{8,}/,
@@ -343,13 +324,29 @@
         // 实时检测密码并更新提示文字颜色
         function validatePasswordInput(password, rulesContainerId) {
             const rulesContainer = document.getElementById(rulesContainerId);
-            const rules = {
-                lengthRule: passwordRules.length.test(password),
-                uppercaseRule: passwordRules.uppercase.test(password),
-                lowercaseRule: passwordRules.lowercase.test(password),
-                numberRule: passwordRules.number.test(password),
-                specialCharRule: passwordRules.specialChar.test(password)
-            };
+
+            // 定义规则对象
+            let rules;
+            if (rulesContainerId == "registerPasswordRules"){
+                rules = {
+                    lengthRule: passwordRules.length.test(password),
+                    uppercaseRule: passwordRules.uppercase.test(password),
+                    lowercaseRule: passwordRules.lowercase.test(password),
+                    numberRule: passwordRules.number.test(password),
+                    specialCharRule: passwordRules.specialChar.test(password)
+                };
+            } else if (rulesContainerId === "resetPasswordRules") {
+                rules = {
+                    resetLengthRule: passwordRules.length.test(password),
+                    resetUppercaseRule: passwordRules.uppercase.test(password),
+                    resetLowercaseRule: passwordRules.lowercase.test(password),
+                    resetNumberRule: passwordRules.number.test(password),
+                    resetSpecialCharRule: passwordRules.specialChar.test(password)
+                };
+            } else {
+                console.error(`Unknown rulesContainerId: "${rulesContainerId}"`);
+                return;
+            }
         
             // 遍历规则并更新对应提示的颜色
             for (const [ruleId, isValid] of Object.entries(rules)) {
@@ -420,9 +417,9 @@
                     } else {
                         // 错误处理
                         if (data.error === "user_not_found") { // 如果用户未找到
-                            alert("该用户未注册或用户名输入有误"); // 显示错误提示
+                            alert("L'utilisateur n'est pas enregistré ou l'adresse e-mail est incorrecte."); // 显示错误提示
                         } else if (data.error === "incorrect_password") { // 如果密码错误
-                            alert("密码输入错误"); // 显示错误提示
+                            alert("Le mot de passe est incorrect."); // 显示错误提示
                         } else {
                             alert(data.message || "Une erreur s'est produite."); // 显示其他错误
                         }
@@ -431,6 +428,25 @@
                 .catch((err) => {
                     console.error("Fetch Error:", err); // 控制台记录错误
                     alert("Une erreur s'est produite."); // 显示错误提示
+                });
+        });
+
+        // 发送注册验证码
+        document.getElementById("sendRegisterCode").addEventListener("click", () => {
+            const email = document.getElementById("registerEmail").value; // 获取注册邮箱
+            if (!email) { // 如果邮箱为空
+                alert("Veuillez fournir une adresse e-mail !"); // 显示错误提示
+                return;
+            }
+        
+            fetch("action_page.php", { // 调用后端接口
+                method: "POST", // POST方法
+                headers: { "Content-Type": "application/json" }, // 设置请求头
+                body: JSON.stringify({ action: "sendVerificationCode", email }), // 请求体包含邮箱信息
+            })
+                .then((response) => response.json()) // 解析JSON响应
+                .then((data) => {
+                    alert(data.message); // 显示后端返回的消息
                 });
         });
 
@@ -461,15 +477,21 @@
                 return;
             }
 
-            fetchWithAuth("action_page.php", { // 调用封装的 `fetchWithAuth`
+            fetch("action_page.php", { // 注册时应调用普通的 fetch
                 method: "POST", // POST方法
                 headers: { "Content-Type": "application/json" }, // 设置请求头
-                body: JSON.stringify({ action: "register", email, password: encryptedPassword, code }), // 请求体包含注册信息
+                body: JSON.stringify({
+                    action: "register", // 操作为 "register"
+                    email: email,       // 用户输入的邮箱
+                    password: encryptedPassword, // 加密后的密码
+                    code: verificationCode // 用户输入的验证码
+                })
             })
                 .then((response) => response.json()) // 解析JSON响应
                 .then((data) => {
+                    console.log("Server Response:", data); // 打印服务器返回结果
                     if (data.success) {
-                        alert(data.message); // 显示成功提示
+                        alert(data.message); // 提示用户注册成功
                         window.location.href = "login.php"; // 跳转到登录页面
                     } else {
                         alert(data.message); // 显示后端返回的错误消息
@@ -477,7 +499,6 @@
                 })
                 .catch((err) => {
                     console.error("Fetch Error:", err);
-                    alert("Une erreur s'est produite.");
                 });
         });
 
@@ -488,17 +509,29 @@
                 alert("Veuillez fournir une adresse e-mail !"); // 显示错误提示
                 return;
             }
-
+        
             fetch("action_page.php", { // 调用后端接口
                 method: "POST", // POST方法
                 headers: { "Content-Type": "application/json" }, // 设置请求头
-                body: JSON.stringify({ action: "sendVerificationCode", email }), // 请求体包含邮箱信息
+                body: JSON.stringify({
+                    action: "sendResetCode", // 新的操作类型
+                    email: email // 用户输入的邮箱
+                }),
             })
                 .then((response) => response.json()) // 解析JSON响应
                 .then((data) => {
-                    alert(data.message); // 显示后端返回的消息
+                    if (data.success) {
+                        alert(data.message); // 显示后端返回的成功消息
+                    } else {
+                        alert(data.message || "Une erreur s'est produite."); // 显示错误提示
+                    }
+                })
+                .catch((err) => {
+                    console.error("Fetch Error:", err);
+                    alert("Une erreur s'est produite.");
                 });
         });
+
 
         // 重置密码逻辑
         document.getElementById("resetSubmit").addEventListener("click", async () => {
@@ -528,7 +561,7 @@
                 return;
             }
 
-            fetchWithAuth("action_page.php", { // 调用后端接口
+            fetch("action_page.php", { // 调用后端接口
                 // POST方法
                 method: "POST", 
                 // 设置请求头

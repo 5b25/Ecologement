@@ -8,7 +8,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 
     <style>
         .slide {
@@ -73,6 +73,10 @@
             align-items: center;
             justify-content: center;
         }
+
+        .navbar-right {
+            margin-right: 20px;
+        }
     </style>
 </head>
 <body>
@@ -81,15 +85,19 @@
     </div>
 
     <div class="dashboard-container">
-    
-        <nav class="navbar navbar-default navbar-fixed-top" role="navigation"> 
-            <div class="container-fluid"> 
-            <div class="navbar-header"> 
-                <a class="navbar-brand" href="dashboard.php">Dashboard</a> 
-            </div> 
+        <!-- 导航栏 -->
+        <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="dashboard.php">Dashboard</a>
+                </div>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a id="userEmail" href="#"></a></li>
+                    <li><a href="logout.php">Logout</a></li>
+                </ul>
+            </div>
         </nav>
 
-        
         <div class="row row-centered">
             <h2 class="page-title" id="pageTitle">Dashboard - Écologement</h2>
         </div>
@@ -151,7 +159,29 @@
     </div>
 
     <script>
-        const apiBaseUrl = "http://localhost:8000";
+        // 从 localStorage 中获取 JWT
+        const jwt = localStorage.getItem('jwt');
+
+        // 检查 JWT 是否存在
+        if (!jwt) {
+            // 如果 JWT 不存在，跳转到登录页面
+            alert("请先登录！");
+            window.location.href = "login.php";
+        } else {
+            // 解析 JWT 获取用户邮箱
+            const payload = JSON.parse(atob(jwt.split('.')[1])); // 解码 JWT 的 payload
+            const userEmail = payload.sub; // 获取用户邮箱
+
+            // 在导航栏中显示用户邮箱
+            document.getElementById('userEmail').textContent = userEmail;
+        }
+
+        // 监听退出按钮点击事件
+        document.querySelector('a[href="logout.php"]').addEventListener('click', (e) => {
+            e.preventDefault(); // 阻止默认行为
+            localStorage.removeItem('jwt'); // 清除 JWT
+            window.location.href = "login.php"; // 跳转到登录页面
+        });
     </script>
 </body>
 </html>

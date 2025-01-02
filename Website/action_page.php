@@ -219,18 +219,29 @@ $dbname = $_ENV['SQL_DATABASE']; // 从 .env 文件中获取数据库名称
 $conn = new mysqli($servername, $username, $password, $dbname);
 
 // 检查连接是否成功
-if ($conn->connect_error) { // 检查连接是否出错
-    echo json_encode(["success" => false, "message" => "Erreur de connexion à MySQL."]);
-    exit();
+if ($conn->connect_error) {
+    die(json_encode(["success" => false, "message" => "Database connection failed: " . $conn->connect_error]));
+} else {
+    writeDebugLog("Database connection established successfully.");
 }
+
+$conn->set_charset("utf8mb4");
+
+// 确保相关表格在数据库中确实存在
+ensureVerificationTableExists($conn);
+ensureUsersTableExists($conn);
 
 // 检查并创建 verification_codes 表
 function ensureVerificationTableExists($conn) {
-    $tableCheckQuery = "SHOW TABLES LIKE 'verification_codes'";
-    $result = $conn->query($tableCheckQuery);
+    try {
+        // 检查表是否存在
+        $tableCheckQuery = "SELECT 1 FROM verification_codes LIMIT 1";
+        $result = $conn->query($tableCheckQuery);
+    } catch (Exception $e) {
+        // 如果查询失败，表不存在，创建表
+        writeDebugLog("Attempting to check or create the 'verification_codes' table.");
 
-    if ($result->num_rows === 0) {
-        // 表不存在，创建表
+        // 重新创建表
         $createTableQuery = "CREATE TABLE verification_codes (
             id INT AUTO_INCREMENT PRIMARY KEY,
             email VARCHAR(255) NOT NULL,
@@ -240,13 +251,44 @@ function ensureVerificationTableExists($conn) {
         )";
 
         if (!$conn->query($createTableQuery)) {
-            die(json_encode(["success" => false, "message" => "Erreur lors de la création de la table: " . $conn->error]));
+            // 如果创建表失败，记录错误日志并终止脚本
+            writeDebugLog("Error creating table 'users': " . $conn->error);
+            die(json_encode(["success" => false, "message" => "Error creating table 'users': " . $conn->error]));
         }
+
+        writeDebugLog("Table 'users' created successfully.");
     }
 }
 
-// 调用函数确保表存在
-ensureVerificationTableExists($conn);
+// 检查并创建 users 表
+function ensureUsersTableExists($conn) {
+    writeDebugLog("Checking if 'users' table exists...");
+
+    // 检查现有表
+    $result = $conn->query("SHOW TABLES LIKE 'users'");
+    if ($result && $result->num_rows > 0) {
+        writeDebugLog("'users' table already exists.");
+        return;
+    }
+
+    // 如果不存在，尝试创建表
+    writeDebugLog("Attempting to create 'users' table...");
+    $createTableQuery = "CREATE TABLE IF NOT EXISTS users (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        email VARCHAR(255) NOT NULL UNIQUE,
+        password_hash VARCHAR(255) NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )";
+
+    if ($conn->query($createTableQuery)) {
+        writeDebugLog("'users' table created successfully.");
+    } else {
+        writeDebugLog("Error creating 'users' table: " . $conn->error);
+        die(json_encode(["success" => false, "message" => "Error creating 'users' table: " . $conn->error]));
+    }
+}
+
+
 
 /******************************* 验证码邮件部分 *******************************/
 // 将验证码保存到数据库中
@@ -273,7 +315,7 @@ function saveVerificationCode($email, $code) {
     return true;
 }
 
-// 在发送验证码时调用
+// 在发送注册验证码时调用
 if ($action === "sendVerificationCode") {
     $email = strtolower(trim(filter_var($data['email'], FILTER_SANITIZE_EMAIL))); // 清理并验证邮箱
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -282,6 +324,7 @@ if ($action === "sendVerificationCode") {
     }
 
     $code = random_int(100000, 999999);
+    writeDebugLog("写入到数据库中的验证码是: $code");
 
     // 保存验证码到数据库
     if (!saveVerificationCode($email, $code)) {
@@ -297,10 +340,61 @@ if ($action === "sendVerificationCode") {
     exit();
 }
 
+// 在发送重置密码的验证码时调用
+if ($action === "sendResetCode") {
+    $email = filter_var($data['email'], FILTER_SANITIZE_EMAIL); // 清理邮箱
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        echo json_encode(["success" => false, "message" => "Adresse e-mail invalide."]);
+        exit();
+    }
+
+    // 检查邮箱是否已注册
+    $stmt = $conn->prepare("SELECT id FROM users WHERE email = ?");
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $stmt->store_result();
+
+    if ($stmt->num_rows === 0) { // 如果邮箱未注册
+        echo json_encode(["success" => false, "message" => "L'adresse e-mail n'est pas enregistrée."]);
+        $stmt->close();
+        exit();
+    }
+    $stmt->close();
+
+    // 生成验证码并保存到数据库
+    $code = random_int(100000, 999999); // 生成6位随机数验证码
+    if (!saveVerificationCode($email, $code)) {
+        echo json_encode(["success" => false, "message" => "Erreur lors de la génération du code de vérification."]);
+        exit();
+    }
+
+    // 将任务添加到队列并立即处理
+    addTaskToQueue($email);
+    processTaskQueue();
+
+    echo json_encode(["success" => true, "message" => "Le code de vérification a été envoyé à votre e-mail."]);
+    exit();
+}
 
 // 添加任务到队列
 function addTaskToQueue($email) {
+    global $conn;
+
     $taskQueueFile = __DIR__ . '/email_task_queue.json';
+
+    // 从数据库中获取该邮箱的验证码
+    $stmt = $conn->prepare("SELECT code FROM verification_codes WHERE email = ? AND expires_at > NOW()");
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $stmt->bind_result($code);
+    $stmt->fetch();
+    $stmt->close();
+
+    // 如果没有找到验证码，则记录日志并退出
+    if (!$code) {
+        writeDebugLog("No valid verification code found in the database for email: $email.");
+        return;
+    }
 
     $taskQueue = [];
     if (file_exists($taskQueueFile)) {
@@ -316,7 +410,7 @@ function addTaskToQueue($email) {
 
     $newTask = [
         'email' => $email,
-        'code' => random_int(100000, 999999),
+        'code' => $code, // 使用数据库中的验证码
         'timestamp' => time(),
     ];
     $taskQueue[] = $newTask;
@@ -338,7 +432,7 @@ function processTaskQueue() {
 
     foreach ($taskQueue as $task) {
         $email = $task['email'];
-        $code = $_SESSION['verification_code']['code'] ?? $task['code']; // 优先使用会话中的验证码
+        $code = $task['code']; // 使用任务队列中已有的验证码
         $success = sendVerificationCodeTask($email, $code);
         
         if ($success) {
@@ -351,6 +445,11 @@ function processTaskQueue() {
 
     // 清空任务列表
     clearTaskQueue();
+
+    // 如果有剩余任务，将它们重新写入队列文件
+    if (!empty($remainingTasks)) {
+        file_put_contents($taskQueueFile, json_encode($remainingTasks, JSON_PRETTY_PRINT));
+    }
 }
 
 // 发送验证码邮件
@@ -358,7 +457,7 @@ function sendVerificationCodeTask($email, $code) {
     $mail = new PHPMailer(true);
 
     try {
-        $mail->SMTPDebug = 4;
+        $mail->SMTPDebug = 2;
         $mail->Debugoutput = function($str, $level) {
             writeDebugLog("SMTP Debug Level $level: $str");
         };
@@ -367,12 +466,12 @@ function sendVerificationCodeTask($email, $code) {
         $mail->isSMTP();
         $mail->Host = 'smtp.qq.com';
         $mail->SMTPAuth = true;
-        $mail->Username = 'SMTP_USERNAME'; // 替换为您的邮箱
-        $mail->Password = 'SMTP_PASSWORD'; // 替换为您的授权码
+        $mail->Username = $_ENV['SMTP_USERNAME'];
+        $mail->Password = $_ENV['SMTP_PASSWORD'];
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
         $mail->Port = 465;
 
-        $mail->setFrom('SMTP_USERNAME', 'Ecologement');
+        $mail->setFrom($_ENV['SMTP_USERNAME'], 'Ecologement');
         $mail->addAddress($email);
 
         $mail->isHTML(true);
@@ -389,27 +488,6 @@ function sendVerificationCodeTask($email, $code) {
     }
 }
 
-/*
-// 验证验证码
-function verifyCode($email, $code) {
-
-    $email = strtolower(trim($email)); // 标准化邮箱
-    if (!isset($_SESSION['verification_code'])) {
-        writeDebugLog("Verification failed: No verification code found in session.");
-        return false;
-    }
-
-    $storedCode = $_SESSION['verification_code'];
-    writeDebugLog("Verifying code. Stored: " . json_encode($storedCode) . ", Provided Email: $email, Provided Code: $code");
-
-    if ($storedCode['email'] === $email && $storedCode['code'] == $code && time() < $storedCode['expires_at']) {
-        unset($_SESSION['verification_code']); // 验证通过后清除验证码
-        return true;
-    }
-    writeDebugLog("Verification failed. Stored Code: " . json_encode($storedCode) . ", Provided Email: $email, Provided Code: $code");
-    return false;
-}
-*/
 // 验证验证码
 function verifyCode($email, $code) {
     global $conn;
@@ -421,6 +499,15 @@ function verifyCode($email, $code) {
     $stmt->bind_result($storedCode, $expiresAt);
     $stmt->fetch();
     $stmt->close();
+
+    // 增加更多的日志记录
+    if (!$storedCode) {
+        writeDebugLog("No stored code found for email: $email");
+    } else {
+        writeDebugLog("从数据库中读取到的验证码是: $storedCode");
+        writeDebugLog("用户发送的验证码是: $code");
+        writeDebugLog("验证码过期时间是: $expiresAt");
+    }
 
     // 检查验证码是否匹配并未过期
     if (!$storedCode || $storedCode !== $code || strtotime($expiresAt) < time()) {
@@ -437,41 +524,12 @@ function verifyCode($email, $code) {
 }
 
 
-// 处理发送验证码的请求（生成验证码）
-if ($action === "sendVerificationCode") {
-    $email = strtolower(trim(filter_var($data['email'], FILTER_SANITIZE_EMAIL))); // 清理并验证邮箱
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        echo json_encode(["success" => false, "message" => "Adresse e-mail invalide."]);
-        exit();
-    }
-
-    // 检查是否已有有效的验证码
-    if (isset($_SESSION['verification_code']) && time() < $_SESSION['verification_code']['expires_at']) {
-        writeDebugLog("A valid code already exists for email: $email");
-        echo json_encode(["success" => false, "message" => "Un code de vérification est déjà valide."]);
-        exit();
-    }
-
-    // 生成新的验证码
-    $code = random_int(100000, 999999);
-
-    // 存储验证码到会话
-    $_SESSION['verification_code'] = [
-        'code' => $code,
-        'email' => $email,
-        'expires_at' => time() + 360 // 验证码有效期 6 分钟
-    ];
-    writeDebugLog("Stored verification code: " . json_encode($_SESSION['verification_code']));
-
-    // 添加到任务队列并发送验证码
-    addTaskToQueue($email);
-    processTaskQueue();
-
-    echo json_encode(["success" => true, "message" => "Le code de vérification a été envoyé à votre e-mail."]);
-    exit();
-}
 
 /******************************* 网页功能部分 *******************************/
+
+writeDebugLog("Action received: " . json_encode($action));
+writeDebugLog("Data received: " . json_encode($data));
+
 // 提取密码并使用私钥解密
 function decryptPassword($encryptedPassword) {
     global $privateKey;
@@ -490,7 +548,7 @@ if ($action === "login") {
     // 使用私钥解密密码
     $decryptedPassword = decryptPassword($encryptedPassword);
     if (!$decryptedPassword) {
-        echo json_encode(["success" => false, "message" => "无法解密密码！"]);
+        echo json_encode(["success" => false, "message" => "Impossible de décrypter le mot de passe !"]);
         exit();
     }
 
@@ -503,12 +561,12 @@ if ($action === "login") {
     $stmt->close();
 
     if (!$passwordHash) {
-        echo json_encode(["success" => false, "error" => "user_not_found", "message" => "该用户未注册或邮箱输入有误"]);
+        echo json_encode(["success" => false, "error" => "user_not_found", "message" => "L'utilisateur n'existe pas ou l'adresse e-mail est incorrecte."]);
         exit();
     }
-
+    
     if (!password_verify($decryptedPassword, $passwordHash)) {
-        echo json_encode(["success" => false, "error" => "incorrect_password", "message" => "密码输入错误"]);
+        echo json_encode(["success" => false, "error" => "incorrect_password", "message" => "Mot de passe incorrect."]);
         exit();
     }
 
@@ -525,6 +583,9 @@ if ($action === "register") {
     // 获取加密的密码和验证码
     $encryptedPassword = $data['password'];
     $code = $data['code'];
+
+    writeDebugLog("用户正在注册，邮箱是: $email");
+    writeDebugLog("用户输入的验证码是: $code");
 
     // 尝试解密密码
     $decryptedPassword = decryptPassword($encryptedPassword);
@@ -557,7 +618,6 @@ if ($action === "register") {
     $stmt->bind_param("ss", $email, $passwordHash);
 
     if ($stmt->execute()) {
-        $jwt = generateJWT($email);
         echo json_encode(["success" => true, "message" => "Inscription réussie !"]);
     } else {
         writeDebugLog("SQL Error: " . $stmt->error); // 捕获具体错误并记录日志
@@ -575,33 +635,42 @@ if ($action === "register") {
 
 // 重置密码逻辑
 if ($action === "resetPassword") {
-    // 验证 JWT
-    $decoded = authenticateRequest();
-    if ($decoded->sub !== $email) {
-        echo json_encode(["success" => false, "message" => "L'email ne correspond pas au jeton JWT."]);
-        exit();
-    }
-    
     $email = filter_var($data['email'], FILTER_SANITIZE_EMAIL);
     $encryptedPassword = $data['password'];
     $code = $data['code'];
 
-    openssl_private_decrypt(base64_decode($encryptedPassword), $decryptedPassword, $privateKey); // 解密密码
+    // 解密密码
+    $decryptedPassword = decryptPassword($encryptedPassword);
+    if (!$decryptedPassword) {
+        echo json_encode(["success" => false, "message" => "Erreur lors du déchiffrement du mot de passe."]);
+        exit();
+    }
 
+    // 验证验证码
     if (!verifyCode($email, $code)) {
         echo json_encode(["success" => false, "message" => "Code de vérification incorrect ou expiré."]);
         exit();
     }
 
-    $passwordHash = password_hash($decryptedPassword, PASSWORD_BCRYPT); // 加密密码
+    // 验证密码复杂性
+    if (strlen($decryptedPassword) < 8 || 
+        !preg_match('/[A-Z]/', $decryptedPassword) || 
+        !preg_match('/[a-z]/', $decryptedPassword) || 
+        !preg_match('/\d/', $decryptedPassword) || 
+        !preg_match('/[\W_]/', $decryptedPassword)) {
+        echo json_encode(["success" => false, "message" => "Le mot de passe doit contenir au moins 8 caractères, avec des majuscules, des minuscules, un chiffre et un caractère spécial."]);
+        exit();
+    }
 
+    // 更新数据库中的密码
+    $passwordHash = password_hash($decryptedPassword, PASSWORD_BCRYPT);
     $stmt = $conn->prepare("UPDATE users SET password_hash = ? WHERE email = ?");
     $stmt->bind_param("ss", $passwordHash, $email);
 
     if ($stmt->execute()) {
         echo json_encode(["success" => true, "message" => "Mot de passe réinitialisé avec succès !"]);
     } else {
-        writeDebugLog("SQL Error: " . $stmt->error); // 捕获具体错误并记录日志
+        writeDebugLog("SQL Error: " . $stmt->error);
         echo json_encode(["success" => false, "message" => "Erreur lors de la réinitialisation du mot de passe."]);
     }
     $stmt->close();

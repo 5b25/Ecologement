@@ -27,3 +27,11 @@ Stack trace:
   thrown in D:\OneDrive\Sorbonne\IOT\TP4\Code\Website\vendor\firebase\php-jwt\src\JWT.php on line 199
 [29-Dec-2024 23:40:13 Europe/Berlin] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in D:\OneDrive\Sorbonne\IOT\TP4\Code\Website\Consommation.php on line 51
 [29-Dec-2024 23:40:13 Europe/Berlin] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in D:\OneDrive\Sorbonne\IOT\TP4\Code\Website\Consommation.php on line 53
+[01-Jan-2025 22:28:21 UTC] PHP Warning:  Module "openssl" is already loaded in Unknown on line 0
+[01-Jan-2025 22:28:21 UTC] PHP Warning:  Module "openssl" is already loaded in Unknown on line 0
+[01-Jan-2025 22:44:21 UTC] PHP Warning:  Module "openssl" is already loaded in Unknown on line 0
+[01-Jan-2025 22:44:22 UTC] PHP Warning:  Module "openssl" is already loaded in Unknown on line 0
+[01-Jan-2025 22:51:42 UTC] PHP Warning:  Module "openssl" is already loaded in Unknown on line 0
+[01-Jan-2025 22:51:42 UTC] PHP Warning:  Module "openssl" is already loaded in Unknown on line 0
+[02-Jan-2025 00:54:22 UTC] PHP Warning:  Module "openssl" is already loaded in Unknown on line 0
+[02-Jan-2025 00:54:22 UTC] PHP Warning:  Module "openssl" is already loaded in Unknown on line 0
