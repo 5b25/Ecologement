@@ -6,6 +6,9 @@ from weather import meteo
 import json
 from typing import Optional
 from urllib.parse import unquote
+from fastapi.responses import JSONResponse
+import pandas as pd
+
 
 app = FastAPI()
 
@@ -284,24 +287,79 @@ async def generate_chart(logement_id: int):
     ui(data)
     return {"message": "La page HTML a été générée et ouverte dans le navigateur."}
 
+
 @app.get("/meteo/")
 async def get_weather_data():
     try:
-        daily_dataframe, current_temperature = meteo()  # Utiliser la function du meteo
+        hourly_dataframe, current_dataframe, daily_dataframe = meteo()
+
+        # 转换日期列为字符串
+        if "date" in hourly_dataframe.columns:
+            hourly_dataframe["date"] = hourly_dataframe["date"].astype(str)
+        if "date" in current_dataframe.columns:
+            current_dataframe["date"] = current_dataframe["date"].astype(str)
+        if "date" in daily_dataframe.columns:
+            daily_dataframe["date"] = daily_dataframe["date"].astype(str)
+
         # 转换 Pandas 数据框为 JSON 格式
         daily_data_json = daily_dataframe.to_dict(orient="records")
-        current_temperature_json = {"current_temperature": current_temperature}
-        return daily_data_json, current_temperature_json
+        hourly_data_json = hourly_dataframe.to_dict(orient="records")
+        current_data_json = current_dataframe.to_dict(orient="records")
+        return JSONResponse(
+            content={
+                "daily_data": daily_data_json,
+                "hourly_data": hourly_data_json,
+                "current_temperature": current_data_json,
+            },
+            status_code=200,
+        )
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erreur lors de l'appel météo: {e}")
     
-    
 @app.get("/currentmeteo/")
-async def get_weather_data():
+async def get_current_weather():
     try:
-        _, current_temperature = meteo()  # Utiliser la function du meteo
-        # 转换 Pandas 数据框为 JSON 格式
-        return current_temperature
+        _, current_dataframe, _ = meteo()
+        
+        if not isinstance(current_dataframe, pd.DataFrame):
+            raise ValueError("Current temperature data is not in DataFrame format.")
+
+        # 将 DataFrame 转换为 JSON 序列化格式
+        current_weather_json = current_dataframe.to_dict(orient="records")[0]  # 获取第一条记录
+        
+        print("Current weather JSON:", current_weather_json)
+        return JSONResponse(
+            content={"current_temperature": current_weather_json["temperature_2m"]},
+            status_code=200,
+        )
+    except Exception as e:
+        print("Error in /currentmeteo/:", e)  # 打印错误日志
+        raise HTTPException(status_code=500, detail=f"Erreur lors de l'appel météo: {e}")
+
+
+
+@app.get("/hourlymeteo/")
+async def get_hourly_weather():
+    try:
+        hourly_dataframe, _, _ = meteo() 
+        hourly_data_json = hourly_dataframe.to_dict(orient="records")
+        return JSONResponse(
+            content={"hourly_data": hourly_data_json},
+            status_code=200,
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Erreur lors de l'appel météo: {e}")
+
+
+@app.get("/dailymeteo/")
+async def get_daily_weather():
+    try:
+        _, _, daily_dataframe = meteo()
+        daily_data_json = daily_dataframe.to_dict(orient="records")
+        return JSONResponse(
+            content={"daily_data": daily_data_json},
+            status_code=200,
+        )
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erreur lors de l'appel météo: {e}")
     

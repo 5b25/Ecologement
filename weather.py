@@ -17,6 +17,7 @@ def meteo():
 		"longitude": 2.36,
 		"current": "temperature_2m",
 		"hourly": "temperature_2m",
+		"daily": ["weather_code", "temperature_2m_max", "temperature_2m_min"],
 		"timezone": "auto"
 	}
 	responses = openmeteo.weather_api(url, params=params)
@@ -30,10 +31,19 @@ def meteo():
 
 	# Current values. The order of variables needs to be the same as requested.
 	current = response.Current()
-	current_temperature = current.Variables(0).Value()
+	current_temperature_2m = current.Variables(0).Value()
 
+	# Fix: Remove the 'time' parameter and directly use current.Time() to create a DataFrame
+	current_dataframe = pd.DataFrame(data={
+	    "date": [pd.to_datetime(current.Time(), unit="s", utc=True)],
+	    "temperature_2m": [current_temperature_2m],
+	})
+	
+	print(current_dataframe)
+	
 	print(f"Current time {current.Time()}")
-	print(f"Current temperature_2m {current_temperature}")
+	print(f"Current temperature_2m {current_temperature_2m}")
+	print(f"Current temperature_2m {current_temperature_2m}")
 
 	# Process hourly data. The order of variables needs to be the same as requested.
 	hourly = response.Hourly()
@@ -50,4 +60,23 @@ def meteo():
 	hourly_dataframe = pd.DataFrame(data = hourly_data)
 	print(hourly_dataframe)
 
-	return hourly_dataframe, current_temperature
+	# Process daily data. The order of variables needs to be the same as requested.
+	daily = response.Daily()
+	daily_weather_code = daily.Variables(0).ValuesAsNumpy()
+	daily_temperature_2m_max = daily.Variables(1).ValuesAsNumpy()
+	daily_temperature_2m_min = daily.Variables(2).ValuesAsNumpy()
+
+	daily_data = {"date": pd.date_range(
+		start = pd.to_datetime(daily.Time(), unit = "s", utc = True),
+		end = pd.to_datetime(daily.TimeEnd(), unit = "s", utc = True),
+		freq = pd.Timedelta(seconds = daily.Interval()),
+		inclusive = "left"
+	)}
+	daily_data["weather_code"] = daily_weather_code
+	daily_data["temperature_2m_max"] = daily_temperature_2m_max
+	daily_data["temperature_2m_min"] = daily_temperature_2m_min
+
+	daily_dataframe = pd.DataFrame(data = daily_data)
+	print(daily_dataframe)
+
+	return hourly_dataframe, current_dataframe, daily_dataframe

@@ -76,31 +76,81 @@
             justify-content: center;
             align-items: center;
             scroll-snap-align: center; /* 滚动到该区域时居中 */
+            background-color: #f9f9f9; /* 背景颜色 */
+            padding: 20px; /* 添加内边距以避免内容贴边 */
         }
+
+        /* 单个内容框样式 */
         .thumbnail {
-            width: 300px; /* 增大显示框宽度 */
-            height: auto; /* 高度自动调整，或设置固定高度 */
+            width: 300px; /* 设置固定宽度 */
+            height: auto; /* 高度根据内容自动调整 */
             padding: 20px; /* 添加内边距 */
             text-align: center;
+            background-color: #fff; /* 设置背景颜色 */
+            border-radius: 10px; /* 圆角 */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 添加阴影 */
+            transition: transform 0.3s ease, box-shadow 0.3s ease; /* 鼠标悬停时的过渡效果 */
         }
+
+        .thumbnail:hover {
+            transform: scale(1.05); /* 鼠标悬停时放大 */
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* 增强阴影效果 */
+        }
+
+        /* 图片样式 */
         .thumbnail img {
-            height: 200px; /* 增大图片高度 */
+            height: 200px; /* 固定图片高度 */
             width: auto; /* 宽度自适应 */
+            border-radius: 5px; /* 图片边框圆角 */
+            margin-bottom: 10px; /* 图片与标题之间的间距 */
         }
+
+        /* 行样式 */
         .row-centered {
             display: flex;
-            justify-content: space-around; /* 修改为 `space-around` 让显示框之间有更大间距 */
+            justify-content: space-around; /* 在每列之间均匀分布 */
             align-items: center;
-            height: auto; /* 根据内容自动调整高度 */
-            gap: 100px; /* 新增列之间的间距 */
+            flex-wrap: wrap; /* 在小屏幕上自动换行 */
+            gap: 50px; /* 列之间的间距 */
         }
+
+        /* 列样式 */
         .col-centered {
             display: flex;
-            flex-direction: column;
+            flex-direction: column; /* 纵向排列 */
             align-items: center;
             justify-content: center;
         }
 
+        /* 按钮样式 */
+        .btn-primary {
+            background-color: #007bff; /* 主按钮颜色 */
+            color: #fff; /* 按钮文字颜色 */
+            padding: 10px 20px; /* 按钮内边距 */
+            text-decoration: none; /* 移除下划线 */
+            border-radius: 5px; /* 按钮圆角 */
+            transition: background-color 0.3s ease, transform 0.3s ease; /* 鼠标悬停效果 */
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3; /* 鼠标悬停时颜色 */
+            transform: translateY(-3px); /* 鼠标悬停时微微上移 */
+        }
+
+        /* 响应式支持 */
+        @media (max-width: 768px) {
+            .thumbnail {
+                width: 250px; /* 小屏幕上缩小显示框宽度 */
+            }
+
+            .thumbnail img {
+                height: 150px; /* 小屏幕上缩小图片高度 */
+            }
+
+            .row-centered {
+                gap: 30px; /* 小屏幕上减小间距 */
+            }
+        }
     </style>
 </head>
 <body>
@@ -128,48 +178,64 @@
         </div>
 
         <!-- 框图内容部分 -->
-        <div class="row-centered-section">
-            <div class="row row-centered">
-                <div class="col-sm-6 col-md-3 col-centered">
-                    <div class="thumbnail">
-                        <img src="photos/Consommation.jpg" alt="Consommation">
-                        <div class="caption">
-                            <h3>Consommation</h3>
-                            <p>Vous pouvez consulter la consommation ici</p>
-                            <p>
-                                <a href="Consommation.php" class="btn btn-primary" role="button">
-                                    Consommation
-                                </a>
-                            </p>
-                        </div>
+        <div class="row row-centered">
+            <!-- Consommation -->
+            <div class="col-sm-6 col-md-3 col-centered">
+                <div class="thumbnail">
+                    <img src="photos/Consommation.jpg" alt="Consommation">
+                    <div class="caption">
+                        <h3>Consommation</h3>
+                        <p>Vous pouvez consulter la consommation ici</p>
+                        <p>
+                            <a href="Consommation.php" class="btn btn-primary" role="button">
+                                Consommation
+                            </a>
+                        </p>
                     </div>
                 </div>
-                <div class="col-sm-6 col-md-3 col-centered">
-                    <div class="thumbnail">
-                        <img src="photos/CA.jpg" alt="Capteurs/Actionneurs">
-                        <div class="caption">
-                            <h3>Capteurs/Actionneurs</h3>
-                            <p>Vous pouvez voir l'état du capteur/actionneurs ici</p>
-                            <p>
-                                <a href="CA.php" class="btn btn-primary" role="button">
-                                    Capteurs/Actionneurs
-                                </a>
-                            </p>
-                        </div>
+            </div>
+            <!-- Capteurs/Actionneurs -->
+            <div class="col-sm-6 col-md-3 col-centered">
+                <div class="thumbnail">
+                    <img src="photos/CA.jpg" alt="Capteurs/Actionneurs">
+                    <div class="caption">
+                        <h3>Capteurs/Actionneurs</h3>
+                        <p>Vous pouvez voir l'état du capteur/actionneurs ici</p>
+                        <p>
+                            <a href="CA.php" class="btn btn-primary" role="button">
+                                Capteurs/Actionneurs
+                            </a>
+                        </p>
                     </div>
                 </div>
-                <div class="col-sm-6 col-md-3 col-centered">
-                    <div class="thumbnail">
-                        <img src="photos/Configuration.jpeg" alt="Configuration">
-                        <div class="caption">
-                            <h3>Configuration</h3>
-                            <p>Vous pouvez ajouter des données ici</p>
-                            <p>
-                                <a href="Configuration.php" class="btn btn-primary" role="button">
-                                    Configuration
-                                </a>
-                            </p>
-                        </div>
+            </div>
+            <!-- Configuration -->
+            <div class="col-sm-6 col-md-3 col-centered">
+                <div class="thumbnail">
+                    <img src="photos/Configuration.jpeg" alt="Configuration">
+                    <div class="caption">
+                        <h3>Configuration</h3>
+                        <p>Vous pouvez ajouter des données ici</p>
+                        <p>
+                            <a href="Configuration.php" class="btn btn-primary" role="button">
+                                Configuration
+                            </a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <!-- Météo -->
+            <div class="col-sm-6 col-md-3 col-centered">
+                <div class="thumbnail">
+                    <img src="photos/météo.jpeg" alt="Météo">
+                    <div class="caption">
+                        <h3>Météo</h3>
+                        <p>Vous pouvez consulter la météo ici</p>
+                        <p>
+                            <a href="meteo.php" class="btn btn-primary" role="button">
+                                Météo
+                            </a>
+                        </p>
                     </div>
                 </div>
             </div>
@@ -187,7 +253,7 @@
         // 检查 JWT 是否存在
         if (!jwt) {
             // 如果 JWT 不存在，跳转到登录页面
-            alert("请先登录！");
+            alert("Veuillez vous connecter et réessayer !");
             window.location.href = "login.php";
         } else {
             // 解析 JWT 获取用户邮箱
