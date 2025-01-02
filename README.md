@@ -64,6 +64,16 @@ La fonctionnalité de cette page web repose sur deux outils : XAMPP et Composer.
 
 Après avoir terminé les configurations ci-dessous, utilisez "http://ecologe.local:721/login.php" pour commencer à accéder au site web.
 
+### **Remarque :**
+Dans le même temps, veuillez modifier le fichier .env dans le dossier "Website" pour que le programme fonctionne normalement.
+Si, sur la page de connexion(login.php), le site Web affiche : 
+    « Aborted connection 25 to db: 'ecologement' user: 'ecologement' host: 'localhost' (init_connect command failed) », 
+vous devez cliquer sur `Shell` à droite du client XAMPP. Dans celui-ci, entrez 
+    « mysql -u root -p » 
+ainsi que le mot de passe correspondant. Une fois connecté avec succès, entrez : 
+    « SET GLOBAL init_connect = 'SET NAMES utf8mb4'; » 
+pour résoudre le problème.
+
 
 ### XAMPP
 

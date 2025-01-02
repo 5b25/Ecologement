@@ -10,6 +10,8 @@
 
 phpmyadmin的密码： 1c22d5eaa05581fdd2f411bf6cde76206e08898aaa03352e28dd3f0100683f64
 
+Aborted connection 25 to db: 'ecologement' user: 'ecologement' host: 'localhost' (init_connect command failed)
+
 SET GLOBAL init_connect = 'SET NAMES utf8mb4';
 
 2. action_page.php 中：

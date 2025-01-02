@@ -2772,3 +2772,31 @@ qQIDAQAB
 [2025-01-02 10:23:31] Received API_KEY: SDkIjUweR5642ClqeJKLsPlD23jws2kg1jfKSJDK=
 [2025-01-02 10:23:31] Public Key API Triggered
 
+[2025-01-02 10:34:10] Loaded ENV: {"SMTP_USERNAME":"","SMTP_PASSWORD":"","SQL_HOST":"localhost","SQL_USERNAME":"ecologement","SQL_PASSWORD":"RRXgQ[recu0bN*Ft","SQL_DATABASE":"ecologement","API_KEY":"SDkIjUweR5642ClqeJKLsPlD23jws2kg1jfKSJDK="}
+[2025-01-02 10:34:10] Generated Fingerprint: Hfmw124BTK09zVDm+CkYwJcBAUHgQWCvxqg8Ixr3fDI=
+[2025-01-02 10:34:10] Received API Key from request: SDkIjUweR5642ClqeJKLsPlD23jws2kg1jfKSJDK=
+[2025-01-02 10:34:10] Received API_KEY: SDkIjUweR5642ClqeJKLsPlD23jws2kg1jfKSJDK=
+[2025-01-02 10:34:10] Public Key API Triggered
+
+[2025-01-02 10:34:13] Loaded ENV: {"SMTP_USERNAME":"","SMTP_PASSWORD":"","SQL_HOST":"localhost","SQL_USERNAME":"ecologement","SQL_PASSWORD":"RRXgQ[recu0bN*Ft","SQL_DATABASE":"ecologement","API_KEY":"SDkIjUweR5642ClqeJKLsPlD23jws2kg1jfKSJDK="}
+[2025-01-02 10:34:13] Generated Fingerprint: Hfmw124BTK09zVDm+CkYwJcBAUHgQWCvxqg8Ixr3fDI=
+[2025-01-02 10:34:14] Database connection established successfully.
+[2025-01-02 10:34:20] Loaded ENV: {"SMTP_USERNAME":"","SMTP_PASSWORD":"","SQL_HOST":"localhost","SQL_USERNAME":"ecologement","SQL_PASSWORD":"RRXgQ[recu0bN*Ft","SQL_DATABASE":"ecologement","API_KEY":"SDkIjUweR5642ClqeJKLsPlD23jws2kg1jfKSJDK="}
+[2025-01-02 10:34:20] Generated Fingerprint: Hfmw124BTK09zVDm+CkYwJcBAUHgQWCvxqg8Ixr3fDI=
+[2025-01-02 10:34:20] Database connection established successfully.
+[2025-01-02 10:37:40] Loaded ENV: {"SMTP_USERNAME":"","SMTP_PASSWORD":"","SQL_HOST":"localhost","SQL_USERNAME":"ecologement","SQL_PASSWORD":"RRXgQ[recu0bN*Ft","SQL_DATABASE":"ecologement","API_KEY":"SDkIjUweR5642ClqeJKLsPlD23jws2kg1jfKSJDK="}
+[2025-01-02 10:37:40] Generated Fingerprint: Hfmw124BTK09zVDm+CkYwJcBAUHgQWCvxqg8Ixr3fDI=
+[2025-01-02 10:37:40] Database connection established successfully.
+[2025-01-02 10:38:23] Loaded ENV: {"SMTP_USERNAME":"","SMTP_PASSWORD":"","SQL_HOST":"localhost","SQL_USERNAME":"ecologement","SQL_PASSWORD":"RRXgQ[recu0bN*Ft","SQL_DATABASE":"ecologement","API_KEY":"SDkIjUweR5642ClqeJKLsPlD23jws2kg1jfKSJDK="}
+[2025-01-02 10:38:23] Generated Fingerprint: Hfmw124BTK09zVDm+CkYwJcBAUHgQWCvxqg8Ixr3fDI=
+[2025-01-02 10:38:23] Database connection established successfully.
+[2025-01-02 10:45:47] Loaded ENV: {"SMTP_USERNAME":"","SMTP_PASSWORD":"","SQL_HOST":"localhost","SQL_USERNAME":"ecologement","SQL_PASSWORD":"RRXgQ[recu0bN*Ft","SQL_DATABASE":"ecologement","API_KEY":"SDkIjUweR5642ClqeJKLsPlD23jws2kg1jfKSJDK="}
+[2025-01-02 10:45:47] Generated Fingerprint: Hfmw124BTK09zVDm+CkYwJcBAUHgQWCvxqg8Ixr3fDI=
+[2025-01-02 10:45:47] Database connection established successfully.
+[2025-01-02 11:13:08] Loaded ENV: {"SMTP_USERNAME":"","SMTP_PASSWORD":"","SQL_HOST":"localhost","SQL_USERNAME":"ecologement","SQL_PASSWORD":"RRXgQ[recu0bN*Ft","SQL_DATABASE":"ecologement","API_KEY":"SDkIjUweR5642ClqeJKLsPlD23jws2kg1jfKSJDK="}
+[2025-01-02 11:13:08] Generated Fingerprint: Hfmw124BTK09zVDm+CkYwJcBAUHgQWCvxqg8Ixr3fDI=
+[2025-01-02 11:13:08] Database connection established successfully.
+[2025-01-02 11:13:08] Checking if 'users' table exists...
+[2025-01-02 11:13:08] 'users' table already exists.
+[2025-01-02 11:13:08] Action received: "login"
+[2025-01-02 11:13:08] Data received: {"action":"login","email":"FMT200907@outlook.com","password":"tzzgDhqi3ixosMeY+4oNLLVaHMdQDZqD64XVo927a0KHF5e9e4yeiscdEWh+Ud7M4GQoBfFD055OTe05i84HAzr1UEHggDgw\/szEaogG4GXxhBJhYZVh9Q0TqF4V6wLwv9DknNZL2ZJuRC4Rq0o+Cc4GJkqeD9rnkuhznz6sYzSHexfR0gfybCopZpNsCJEYvSsesyNTLneXBYIpLOO5x54sIyr55Pq+LK9WQEYs9WvAkPHLyOM4FakpOpSXblVxWsv08pPMZz0cIOgY7BSKcQUOmN9c6iUMIk2KM+rKcWMNSoeERRnPzGb1KEDyypTt3UuJ10mVefGCELEn\/mZ34w=="}

@@ -79,7 +79,7 @@ $hourly_weather = $weather_data["hourly_data"] ?? [];
         .wallpaper {
             width: 100%;
             height: 100%;
-            background-image: url('photos/meteobackground.jpg');
+            background-image: url('photos/meteobackground2.jpg');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
