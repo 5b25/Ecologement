@@ -1,0 +1,3 @@
+[Sun Dec 29 23:36:30.960068 2024] [php:error] [pid 11284:tid 1904] [client 127.0.0.1:41098] script 'D:/OneDrive/Sorbonne/IOT/TP4/Code/Website/Consommation.php' not found or unable to stat, referer: http://ecologe.local:721/dashboard.php
+[Sun Dec 29 23:36:32.971961 2024] [php:error] [pid 11284:tid 1904] [client 127.0.0.1:41098] script 'D:/OneDrive/Sorbonne/IOT/TP4/Code/Website/Consommation.php' not found or unable to stat, referer: http://ecologe.local:721/dashboard.php
+[Sun Dec 29 23:36:34.591838 2024] [php:error] [pid 11284:tid 1904] [client 127.0.0.1:41098] script 'D:/OneDrive/Sorbonne/IOT/TP4/Code/Website/Consommation.php' not found or unable to stat, referer: http://ecologe.local:721/dashboard.php

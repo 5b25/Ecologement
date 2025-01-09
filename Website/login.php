@@ -484,7 +484,7 @@
                     action: "register", // 操作为 "register"
                     email: email,       // 用户输入的邮箱
                     password: encryptedPassword, // 加密后的密码
-                    code: verificationCode // 用户输入的验证码
+                    code: code // 用户输入的验证码
                 })
             })
                 .then((response) => response.json()) // 解析JSON响应

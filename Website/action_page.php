@@ -459,7 +459,7 @@ function sendVerificationCodeTask($email, $code) {
     try {
         $mail->SMTPDebug = 2;
         $mail->Debugoutput = function($str, $level) {
-            writeDebugLog("SMTP Debug Level $level: $str");
+            // writeDebugLog("SMTP Debug Level $level: $str");
         };
 
         $mail->CharSet = "UTF-8";
@@ -620,8 +620,9 @@ if ($action === "register") {
     if ($stmt->execute()) {
         echo json_encode(["success" => true, "message" => "Inscription réussie !"]);
     } else {
-        writeDebugLog("SQL Error: " . $stmt->error); // 捕获具体错误并记录日志
         $error = $conn->error;
+        writeDebugLog("SQL Error: " . $stmt->error); // 捕获具体错误并记录日志
+
         if (strpos($error, 'Duplicate entry') !== false) {
             echo json_encode(["success" => false, "message" => "L'adresse e-mail est déjà utilisée."]);
         } else {
