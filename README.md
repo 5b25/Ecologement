@@ -194,3 +194,17 @@ Dans le même temps, veuillez modifier le fichier .env dans le dossier "Website"
 ---
 ### action_page.php
   Le chemin de `openssl.cnf` est un chemin codé en dur. Si le chemin d'installation actuel de XAMPP n'est pas `D:\xampp`, il faudra le modifier pour qu'il corresponde au chemin approprié.
+
+---
+### Référence 
+
+    https://www.w3schools.com/bootstrap/default.asp
+    
+    https://www.runoob.com/bootstrap/bootstrap-tutorial.html
+    
+    https://www.runoob.com/html/html-tutorial.html
+    
+    https://www.runoob.com/php/php-tutorial.html
+    
+    Le Chatgpt
+
